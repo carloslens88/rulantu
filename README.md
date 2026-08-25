@@ -97,32 +97,36 @@ this is a single-file change.
 
 - Swap in the real logo (see above).
 - Point the `rulantu.com` DNS at whichever host you deploy to (below).
-- Confirm `support@rulantu.com` (where contact-form submissions land,
-  see below) actually forwards to an inbox someone checks — that's
-  configured separately, in Namecheap's Email Forwarding settings, not
-  in this repo or in Resend.
 
-## Contact form — via Resend, through one Worker route
+## Email — two separate systems, both free
 
-The form (`src/components/sections/ContactForm.tsx`) POSTs to
-`/api/contact`, handled by `worker.js` — the same one-file Worker that
-does the `www` → apex redirect. That route:
+**Outbound (contact form → Resend).** The form
+(`src/components/sections/ContactForm.tsx`) POSTs to `/api/contact`,
+handled by `worker.js` — the same one-file Worker that does the `www` →
+apex redirect. That route validates the fields, then calls the Resend API
+with `env.RESEND_API_KEY` (a Cloudflare secret — never in code, never
+client-side) to send from `hello@rulantu.com` to `support@rulantu.com`,
+with `reply_to` set to the visitor's address so replying goes straight to
+them. This is the entire "backend": one stateless route, no database,
+nothing persisted. Resend's free tier covers this comfortably. Domain
+verification (DKIM, `send.rulantu.com` MX/SPF, `_dmarc`) lives as DNS
+records in the Cloudflare zone.
 
-1. Validates the fields (name/email/message present, email looks like an
-   email, sane length limits).
-2. Calls the Resend API with `env.RESEND_API_KEY` (a Cloudflare secret —
-   never in code, never client-side) to send from `hello@rulantu.com` to
-   `support@rulantu.com`, with `reply_to` set to the visitor's address so
-   replying goes straight to them.
+**Inbound (`support@rulantu.com` → a real inbox).** Resend only sends —
+receiving `support@rulantu.com` is handled separately by **Cloudflare
+Email Routing** (free), which forwards it to `rulantu.support@gmail.com`.
+This replaced the domain's previous Namecheap email forwarding, whose old
+MX/SPF records were removed from the zone to avoid conflicting with
+Cloudflare's own MX records. Managed entirely in the Cloudflare
+dashboard/API (Email Routing → Routing rules) — not part of this repo.
+To point it at a different inbox, or add another address, no code change
+is needed — just a new routing rule.
 
-This is the entire "backend": one stateless route, no database, no
-session, nothing persisted. `env.ASSETS.fetch(request)` still handles
-every other request exactly as before — the Worker only intercepts `/api/contact`
-and the `www` redirect.
-
-Resend's free tier (a few thousand emails/month at time of writing) covers
-this comfortably. Domain verification (DKIM, `send.rulantu.com` MX/SPF,
-`_dmarc`) is already set up as DNS records in the Cloudflare zone.
+Replying from a lead notification already goes straight to the visitor
+(via `reply_to`, above). If you also want to compose *new* mail as
+`support@rulantu.com` (not just reply to leads), the free path is Gmail's
+"Send mail as" using Resend's SMTP credentials as the outgoing server —
+ask if you want that set up.
 
 ### Secrets
 
