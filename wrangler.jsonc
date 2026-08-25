@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "rulantu",
+  "compatibility_date": "2026-08-20",
+  // Pure static export (see next.config.ts: output: "export") — served
+  // directly as Workers Static Assets. No Worker script, no OpenNext,
+  // no server: this repo has no runtime backend by design.
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}
