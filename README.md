@@ -95,37 +95,45 @@ this is a single-file change.
 
 ## Before going live
 
-- **`src/data/content.ts` → `brand.contactEmail`** is a placeholder
-  (`hello@rulantu.com`). Replace it with the real inbox before launch —
-  it's used as the `mailto:` fallback for the contact form and in the
-  footer.
 - Swap in the real logo (see above).
 - Point the `rulantu.com` DNS at whichever host you deploy to (below).
+- Confirm `support@rulantu.com` (where contact-form submissions land,
+  see below) actually forwards to an inbox someone checks — that's
+  configured separately, in Namecheap's Email Forwarding settings, not
+  in this repo or in Resend.
 
-## Contact form — zero backend
+## Contact form — via Resend, through one Worker route
 
-The contact form (`src/components/sections/ContactForm.tsx`) needs no
-server:
+The form (`src/components/sections/ContactForm.tsx`) POSTs to
+`/api/contact`, handled by `worker.js` — the same one-file Worker that
+does the `www` → apex redirect. That route:
 
-- **Default (no configuration):** submitting the form opens the visitor's
-  email client with a pre-filled `mailto:` to `brand.contactEmail`. Works
-  everywhere, costs nothing, needs no setup.
-- **Optional upgrade — Formspree free tier:** set the environment variable
-  `NEXT_PUBLIC_FORMSPREE_ID` at build time (see below) and submissions
-  POST directly to Formspree from the browser instead — a real inbox, no
-  server of ours involved, still €0/month on Formspree's free tier
-  (50 submissions/month at time of writing — check their current limits
-  before relying on it for volume).
+1. Validates the fields (name/email/message present, email looks like an
+   email, sane length limits).
+2. Calls the Resend API with `env.RESEND_API_KEY` (a Cloudflare secret —
+   never in code, never client-side) to send from `hello@rulantu.com` to
+   `support@rulantu.com`, with `reply_to` set to the visitor's address so
+   replying goes straight to them.
 
-### Environment variables
+This is the entire "backend": one stateless route, no database, no
+session, nothing persisted. `env.ASSETS.fetch(request)` still handles
+every other request exactly as before — the Worker only intercepts `/api/contact`
+and the `www` redirect.
 
-| Variable | Required | Purpose | Cost |
-|---|---|---|---|
-| `NEXT_PUBLIC_FORMSPREE_ID` | No | Formspree form ID. If unset, the contact form falls back to a `mailto:` link — no functionality is lost. | Free tier |
+Resend's free tier (a few thousand emails/month at time of writing) covers
+this comfortably. Domain verification (DKIM, `send.rulantu.com` MX/SPF,
+`_dmarc`) is already set up as DNS records in the Cloudflare zone.
 
-No other environment variables or secrets are used anywhere in this
-project. `NEXT_PUBLIC_*` variables are inlined into the static bundle at
-build time by Next.js — they are not sensitive.
+### Secrets
+
+| Secret | Where | Purpose |
+|---|---|---|
+| `RESEND_API_KEY` | Cloudflare Worker secret (`wrangler secret put RESEND_API_KEY`) | Sends the contact-form email via Resend. Never appears in the repo, the client bundle, or `wrangler.jsonc`. |
+
+For local development, `wrangler dev` reads `RESEND_API_KEY` from
+`.dev.vars` (gitignored — create it locally with
+`RESEND_API_KEY=re_...` if you need to test the form against real
+Resend sends).
 
 ## Deployment — Cloudflare Workers Static Assets (live, €0/month)
 
@@ -156,12 +164,14 @@ Namecheap → Domain List → Manage → Nameservers → Custom DNS) — custom
 domains and their TLS certs can't provision otherwise. First-time auth:
 `npx wrangler login` (opens a browser, no token to manage).
 
-(Optional) add `NEXT_PUBLIC_FORMSPREE_ID` as a Cloudflare secret/env var if
-using the Formspree upgrade, then rebuild before deploying.
+Also needs `RESEND_API_KEY` set (`npx wrangler secret put RESEND_API_KEY`)
+for the contact form — see below.
 
 Any static host works the same way in spirit (Netlify, GitHub Pages,
 Vercel's free tier) — build command `npm run build`, publish directory
-`out` — just without the www-redirect Worker, which is Cloudflare-specific.
+`out` — just without the Worker (the `www` redirect and `/api/contact`
+route are Cloudflare-specific; another host would need its own
+equivalent for both).
 
 ## Infrastructure audit
 
@@ -171,9 +181,9 @@ Vercel's free tier) — build command `npm run build`, publish directory
 | Supabase | **Not used** |
 | Paid hosting | **Not used** — Cloudflare Workers Static Assets, free tier |
 | Database | **Not used** — no data layer; the site is entirely static |
-| Backend / API server | **Not used** |
+| Backend / API server | **One route** (`/api/contact` in `worker.js`) — stateless, no database, sends via Resend's free tier |
 | CMS | **Not used** — content lives in `src/data/content.ts`, versioned in git |
-| Paid APIs | **Not used** — Formspree is optional and free-tier |
+| Paid APIs | **Not used** — Resend free tier |
 | Analytics | **Not installed.** If added, use Cloudflare Web Analytics (free, no cookies, no config needed beyond enabling it in the dashboard). |
 | Fonts | Self-hosted at build time via `next/font/google` — no runtime request to Google Fonts, no separate cost or privacy concern |
 

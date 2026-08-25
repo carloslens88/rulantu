@@ -96,7 +96,6 @@ export type Dictionary = {
     sending: string;
     sentMessage: string;
     errorPrefix: string;
-    subjectLine: string;
   };
   footer: {
     tagline: string;
@@ -116,8 +115,8 @@ const brandShared = {
   domain: "rulantu.com",
   instagram: "https://www.instagram.com/rulantu_com",
   instagramHandle: "@rulantu_com",
-  // TODO before launch: replace with the real inbox RULANTU wants leads to land in.
-  contactEmail: "hello@rulantu.com",
+  // Contact form submissions (via Resend, see worker.js) land here.
+  contactEmail: "support@rulantu.com",
   // TODO before launch: replace with the real WhatsApp Business number —
   // digits only, country code first, no "+" or spaces (e.g. "34600000000").
   whatsapp: "000000000",
@@ -325,7 +324,6 @@ const en: Dictionary = {
     sending: "Sending…",
     sentMessage: "Got it. We'll be in touch shortly.",
     errorPrefix: "Something went wrong — email us directly at",
-    subjectLine: "New project inquiry via rulantu.com",
   },
   footer: {
     tagline: "We make brands impossible to ignore.",
@@ -540,7 +538,6 @@ const es: Dictionary = {
     sending: "Enviando…",
     sentMessage: "Listo. Nos pondremos en contacto pronto.",
     errorPrefix: "Algo salió mal — escríbenos directamente a",
-    subjectLine: "Nueva consulta de proyecto vía rulantu.com",
   },
   footer: {
     tagline: "Hacemos marcas imposibles de ignorar.",

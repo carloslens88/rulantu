@@ -5,8 +5,6 @@ import type { Dictionary } from "@/data/content";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
-const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID;
-
 const fieldClasses =
   "w-full bg-transparent border-0 border-b border-paper/25 focus:border-signal py-3 text-lg placeholder:text-stone text-paper outline-none transition-colors duration-300";
 
@@ -15,39 +13,30 @@ type ContactFormProps = {
 };
 
 /**
- * Zero-backend contact form. When NEXT_PUBLIC_FORMSPREE_ID is configured at
- * build time, submissions post directly to Formspree's free tier (no server
- * of ours involved). Without it, submission falls back to a pre-filled
- * mailto: so the form is always functional with zero infrastructure.
+ * Posts to /api/contact — a one-route Worker (worker.js) that sends the
+ * message via Resend using a secret held server-side. Not a "backend" in
+ * the app-server sense: stateless, no database, one job.
  */
 export default function ContactForm({ dict }: ContactFormProps) {
   const { contactForm, brand } = dict;
   const [status, setStatus] = useState<Status>("idle");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
+    const payload = {
+      name: data.get("name"),
+      email: data.get("email"),
+      message: data.get("message"),
+    };
 
-    if (!FORMSPREE_ID) {
-      e.preventDefault();
-      const name = data.get("name");
-      const email = data.get("email");
-      const message = data.get("message");
-      const body = `From: ${name} (${email})\n\n${message}`;
-      window.location.href = `mailto:${brand.contactEmail}?subject=${encodeURIComponent(
-        contactForm.subjectLine
-      )}&body=${encodeURIComponent(body)}`;
-      setStatus("sent");
-      return;
-    }
-
-    e.preventDefault();
     setStatus("sending");
     try {
-      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      const res = await fetch("/api/contact", {
         method: "POST",
-        headers: { Accept: "application/json" },
-        body: data,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
       setStatus(res.ok ? "sent" : "error");
       if (res.ok) form.reset();
