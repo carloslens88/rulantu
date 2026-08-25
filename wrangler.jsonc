@@ -2,11 +2,20 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "rulantu",
   "compatibility_date": "2026-08-20",
-  // Pure static export (see next.config.ts: output: "export") — served
-  // directly as Workers Static Assets. No Worker script, no OpenNext,
-  // no server: this repo has no runtime backend by design.
+  // Pure static export (see next.config.ts: output: "export"). worker.js is
+  // a thin edge redirect (www -> apex) in front of Workers Static Assets —
+  // no OpenNext, no app server, no state: this repo has no backend.
+  "main": "worker.js",
   "assets": {
     "directory": "./out",
-    "not_found_handling": "404-page"
-  }
+    "not_found_handling": "404-page",
+    "binding": "ASSETS",
+    // Without this, Cloudflare serves matching static files directly and
+    // skips worker.js entirely — which would skip the www redirect too.
+    "run_worker_first": true
+  },
+  "routes": [
+    { "pattern": "rulantu.com", "custom_domain": true },
+    { "pattern": "www.rulantu.com", "custom_domain": true }
+  ]
 }

@@ -127,22 +127,41 @@ No other environment variables or secrets are used anywhere in this
 project. `NEXT_PUBLIC_*` variables are inlined into the static bundle at
 build time by Next.js — they are not sensitive.
 
-## Deployment — Cloudflare Pages (recommended, €0/month)
+## Deployment — Cloudflare Workers Static Assets (live, €0/month)
 
-1. Push this repo to GitHub/GitLab.
-2. In the Cloudflare dashboard: **Workers & Pages → Create → Pages →
-   Connect to Git**, select this repo.
-3. Build settings:
-   - Framework preset: **Next.js (Static HTML Export)**
-   - Build command: `npm run build`
-   - Build output directory: `out`
-4. (Optional) add `NEXT_PUBLIC_FORMSPREE_ID` under **Settings →
-   Environment variables** if you're using the Formspree upgrade.
-5. **Custom domains → Add** `rulantu.com` and follow the DNS instructions
-   (Cloudflare Pages issues and renews the TLS certificate for free).
+Live at **rulantu.com** (+ `www.rulantu.com` redirecting to it) and
+`carloslens88/rulantu` on GitHub.
 
-Any other static host works the same way (Netlify, GitHub Pages, Vercel's
-free tier) — build command `npm run build`, publish directory `out`.
+Cloudflare's Git-connected "Workers & Pages" import defaults Next.js
+projects to building through OpenNext (`npx opennextjs-cloudflare build`),
+an adapter for apps that need SSR — this repo doesn't (`output: "export"`,
+zero server code), and that build fails since it expects things a static
+export doesn't have. So this deploys a different way: `wrangler.jsonc`
+serves `./out` directly as **Workers Static Assets**, with a one-file
+Worker (`worker.js`) in front of it doing exactly one thing — 301
+redirecting `www.rulantu.com` to the apex domain. No SSR, no OpenNext, no
+app server; `worker.js` is a stateless edge redirect, not a backend.
+
+To deploy:
+
+```bash
+npm run build          # -> ./out
+npx wrangler deploy    # reads wrangler.jsonc, uploads ./out, wires up
+                        # rulantu.com + www.rulantu.com as custom domains
+```
+
+`wrangler deploy` needs a Cloudflare account with **rulantu.com already
+added as a Cloudflare zone** (nameservers pointed at Cloudflare's, e.g. via
+Namecheap → Domain List → Manage → Nameservers → Custom DNS) — custom
+domains and their TLS certs can't provision otherwise. First-time auth:
+`npx wrangler login` (opens a browser, no token to manage).
+
+(Optional) add `NEXT_PUBLIC_FORMSPREE_ID` as a Cloudflare secret/env var if
+using the Formspree upgrade, then rebuild before deploying.
+
+Any static host works the same way in spirit (Netlify, GitHub Pages,
+Vercel's free tier) — build command `npm run build`, publish directory
+`out` — just without the www-redirect Worker, which is Cloudflare-specific.
 
 ## Infrastructure audit
 
@@ -150,7 +169,7 @@ free tier) — build command `npm run build`, publish directory `out`.
 |---|---|
 | Monthly cost | **€0** |
 | Supabase | **Not used** |
-| Paid hosting | **Not used** — static export on Cloudflare Pages free tier |
+| Paid hosting | **Not used** — Cloudflare Workers Static Assets, free tier |
 | Database | **Not used** — no data layer; the site is entirely static |
 | Backend / API server | **Not used** |
 | CMS | **Not used** — content lives in `src/data/content.ts`, versioned in git |
