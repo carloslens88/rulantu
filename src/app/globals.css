@@ -197,7 +197,17 @@
 
   .grain,
   .cursor-dot,
-  .cursor-ring {
+  .cursor-ring,
+  .signal-ignite {
+    display: none;
+  }
+}
+
+/* Small screens: skip the convergence effect entirely rather than trying
+   to re-aim it at a wordmark with a totally different aspect ratio — the
+   plain SplitReveal underneath is the whole experience there. */
+@media (max-width: 767px) {
+  .signal-ignite {
     display: none;
   }
 }
