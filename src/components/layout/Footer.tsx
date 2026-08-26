@@ -17,7 +17,7 @@ export default function Footer({ dict }: FooterProps) {
 
       <div style={{ padding: "clamp(4rem, 10vw, 7rem) var(--container-pad) 3rem" }}>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-end">
-          <Logo className="md:col-span-7 text-[16vw] md:text-[9vw] leading-none text-ink" />
+          <Logo variant="full" className="md:col-span-7 w-full max-w-2xl h-auto" />
 
           <div className="md:col-span-5">
             <p className="eyebrow text-stone-soft mb-1">{dict.footer.getInTouch}</p>

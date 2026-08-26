@@ -86,12 +86,29 @@ dictionaries share the `Dictionary` type.
 
 ## The logo
 
-No logo asset was supplied for this build. The site currently uses a
-typographic wordmark (`src/components/ui/Logo.tsx`) as the primary mark.
-To swap in the real RULANTU logo: drop the file into `public/`, then
-replace the `<span>` in `Logo.tsx` with an `<Image>`/`<img>` pointing at
-it. `Logo` is used in three places (nav, footer, favicon is separate) so
-this is a single-file change.
+`src/components/ui/Logo.tsx` renders the real mark, extracted from the
+supplied artwork (a flattened JPEG mockup with no transparency). Two
+derived assets live in `public/`, each as WebP with a PNG fallback via
+`<picture>`:
+
+- `logo-icon.(png|webp)` — just the mountain/circuit mark, background
+  removed. Used small, paired with real "RULANTU" text (`variant="compact"`,
+  the default) — nav, mobile menu.
+- `logo-lockup.(png|webp)` — the full icon + wordmark together, as
+  designed. Used large, where the wordmark's own metallic rendering reads
+  clearly (`variant="full"`) — footer.
+- `favicon.svg` — a separate, simplified asset: the icon's silhouette
+  (traced with `potrace`, fine circuit-line detail dropped) in flat signal
+  orange on the ink background. The full metallic icon has too much fine
+  detail to read at 16–32px; a bold flat silhouette does.
+
+There's a small soft artifact from AI background removal near the base of
+the orange chevron (visible on close inspection, not on a normal page
+view) — a cleaner source file (vector or a transparent-background export)
+would let this be redone with a clean cut instead. To swap in a better
+source later: redo the crop/background-removal pipeline (`rembg` with
+`alpha_matting=True` got the cleanest result here) and replace the four
+files in `public/`, keeping the same filenames.
 
 ## Before going live
 
