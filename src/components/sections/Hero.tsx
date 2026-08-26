@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { getGsap, prefersReducedMotion } from "@/lib/gsap";
 import SplitReveal from "@/components/ui/SplitReveal";
-import SignalIgnite from "@/components/sections/SignalIgnite";
+import OrbitSignal from "@/components/sections/OrbitSignal";
 import MagneticButton from "@/components/ui/MagneticButton";
 import Marquee from "@/components/ui/Marquee";
 import type { Dictionary } from "@/data/content";
@@ -115,12 +115,11 @@ export default function Hero({ dict }: HeroProps) {
 
       <div className="relative z-10 flex-1 flex flex-col justify-center">
         <div ref={wordmarkRef} className="relative" style={{ padding: "0 var(--container-pad)" }}>
-          <SignalIgnite />
+          <OrbitSignal className="absolute right-[6%] xl:right-[10%] top-1/2 -translate-y-1/2 w-[9vw] h-auto max-w-[150px]" />
           <h1 className="font-display font-black leading-[0.86] tracking-tight text-paper select-none">
             <SplitReveal
               text={dict.brand.name}
               by="char"
-              delay={0.75}
               className="block text-[16vw] md:text-[15vw] lg:text-[13vw]"
             />
           </h1>
@@ -132,7 +131,7 @@ export default function Hero({ dict }: HeroProps) {
           className="mt-8 md:mt-10 max-w-3xl"
         >
           <p className="font-display font-medium leading-[1.05] tracking-tight text-paper text-[7vw] sm:text-[5vw] md:text-[3.4vw] lg:text-[2.6vw]">
-            <SplitReveal text={dict.brand.claim} by="word" delay={1.35} />
+            <SplitReveal text={dict.brand.claim} by="word" delay={0.5} />
           </p>
         </div>
 
