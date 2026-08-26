@@ -12,35 +12,51 @@ type DifferentiationProps = {
 export default function Differentiation({ dict }: DifferentiationProps) {
   const { differentiation } = dict;
   const listRef = useRef<HTMLUListElement>(null);
+  const arrowWrapRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<SVGCircleElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const list = listRef.current;
-    if (!list) return;
+    const arrowWrap = arrowWrapRef.current;
+    const dot = dotRef.current;
+    const card = cardRef.current;
+    if (!list || !arrowWrap || !dot || !card) return;
 
     const strokes = Array.from(list.querySelectorAll<SVGPathElement>("[data-strike]"));
+    const arrowShaft = arrowWrap.querySelector<SVGPathElement>("[data-arrow-shaft]");
+    const arrowHead = arrowWrap.querySelector<SVGPathElement>("[data-arrow-head]");
 
     if (prefersReducedMotion()) {
       strokes.forEach((s) => s.style.setProperty("stroke-dashoffset", "0"));
+      [arrowShaft, arrowHead].forEach((p) => p?.style.setProperty("stroke-dashoffset", "0"));
       return;
     }
 
     const { gsap } = getGsap();
     const ctx = gsap.context(() => {
-      gsap.fromTo(
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: list, start: "top 70%", once: true },
+      });
+
+      tl.fromTo(
         strokes,
         { strokeDashoffset: 1 },
-        {
-          strokeDashoffset: 0,
-          duration: 0.5,
-          stagger: 0.14,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: list,
-            start: "top 70%",
-            once: true,
-          },
-        }
-      );
+        { strokeDashoffset: 0, duration: 0.5, stagger: 0.14, ease: "power2.out" }
+      )
+        // The shaft draws, a signal rides it, the arrowhead catches up, then
+        // the card it lands on takes a brief hit — the scattered list
+        // resolving into one destination.
+        .fromTo(arrowShaft, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.35, ease: "power1.in" }, "+=0.1")
+        .fromTo(dot, { opacity: 1, attr: { cx: 2 } }, { attr: { cx: 44 }, duration: 0.4, ease: "power1.in" }, "<")
+        .fromTo(arrowHead, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.15, ease: "power1.out" }, "-=0.05")
+        .to(dot, { opacity: 0, duration: 0.1 }, "<")
+        .fromTo(
+          card,
+          { scale: 1 },
+          { scale: 1.03, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1, transformOrigin: "50% 50%" },
+          "<"
+        );
     }, list);
 
     return () => ctx.revert();
@@ -101,22 +117,35 @@ export default function Differentiation({ dict }: DifferentiationProps) {
           </ul>
         </div>
 
-        <div className="hidden md:flex md:col-span-2 items-center justify-center pt-16">
+        <div ref={arrowWrapRef} className="hidden md:flex md:col-span-2 items-center justify-center pt-16">
           <svg width="48" height="24" viewBox="0 0 48 24" fill="none" aria-hidden="true">
             <path
-              d="M2 12H46M46 12L36 2M46 12L36 22"
+              data-arrow-shaft
+              d="M2 12H44"
+              stroke="var(--signal)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              pathLength={1}
+              strokeDasharray={1}
+            />
+            <path
+              data-arrow-head
+              d="M46 12L36 2M46 12L36 22"
               stroke="var(--signal)"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
+              pathLength={1}
+              strokeDasharray={1}
             />
+            <circle ref={dotRef} cx="2" cy="12" r="2.5" fill="var(--signal)" opacity="0" />
           </svg>
         </div>
 
         <div className="md:col-span-5">
           <p className="eyebrow mb-6 text-signal-dim">{differentiation.after.label}</p>
           <Reveal>
-            <div className="bg-ink text-paper rounded-2xl p-8 md:p-10">
+            <div ref={cardRef} className="bg-ink text-paper rounded-2xl p-8 md:p-10">
               <p className="font-display font-bold text-2xl md:text-3xl leading-snug">
                 {differentiation.after.items[0]}
               </p>
