@@ -149,17 +149,6 @@
     }
   }
 
-  /* Ambient glow pulse — echoes the logo's glowing peak. Only opacity
-     animates here; the Hero's cursor-follow script owns `transform`. */
-  @keyframes signal-pulse {
-    0%, 100% { opacity: 0.22; }
-    50% { opacity: 0.4; }
-  }
-
-  .signal-pulse {
-    animation: signal-pulse 4.5s ease-in-out infinite;
-  }
-
   /* Marquee */
   @keyframes marquee {
     to {
@@ -197,17 +186,7 @@
 
   .grain,
   .cursor-dot,
-  .cursor-ring,
-  .signal-ignite {
-    display: none;
-  }
-}
-
-/* Small screens: skip the convergence effect entirely rather than trying
-   to re-aim it at a wordmark with a totally different aspect ratio — the
-   plain SplitReveal underneath is the whole experience there. */
-@media (max-width: 767px) {
-  .signal-ignite {
+  .cursor-ring {
     display: none;
   }
 }

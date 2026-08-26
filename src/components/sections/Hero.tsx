@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { getGsap, prefersReducedMotion } from "@/lib/gsap";
 import SplitReveal from "@/components/ui/SplitReveal";
-import OrbitSignal from "@/components/sections/OrbitSignal";
+import HeroCircuitField from "@/components/sections/HeroCircuitField";
 import MagneticButton from "@/components/ui/MagneticButton";
 import Marquee from "@/components/ui/Marquee";
 import type { Dictionary } from "@/data/content";
@@ -14,45 +14,8 @@ type HeroProps = {
 
 export default function Hero({ dict }: HeroProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const glowRef = useRef<HTMLDivElement>(null);
   const wordmarkRef = useRef<HTMLDivElement>(null);
   const claimRef = useRef<HTMLDivElement>(null);
-
-  // Cursor-follow ambient glow — a soft signal-colored light, not a blob.
-  useEffect(() => {
-    const isFine = window.matchMedia("(pointer: fine)").matches;
-    if (!isFine || prefersReducedMotion()) return;
-
-    const glow = glowRef.current;
-    const section = sectionRef.current;
-    if (!glow || !section) return;
-
-    let x = window.innerWidth / 2;
-    let y = window.innerHeight * 0.4;
-    let gx = x;
-    let gy = y;
-    let raf = 0;
-
-    const onMove = (e: MouseEvent) => {
-      x = e.clientX;
-      y = e.clientY;
-    };
-
-    const tick = () => {
-      gx += (x - gx) * 0.06;
-      gy += (y - gy) * 0.06;
-      glow.style.transform = `translate(${gx}px, ${gy}px) translate(-50%, -50%)`;
-      raf = requestAnimationFrame(tick);
-    };
-
-    window.addEventListener("mousemove", onMove);
-    raf = requestAnimationFrame(tick);
-
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
 
   // Scroll-linked exit parallax on the wordmark + claim.
   useEffect(() => {
@@ -97,15 +60,7 @@ export default function Hero({ dict }: HeroProps) {
       ref={sectionRef}
       className="relative min-h-[100svh] flex flex-col justify-between overflow-hidden bg-ink pt-28 pb-0"
     >
-      <div
-        ref={glowRef}
-        aria-hidden="true"
-        className="signal-pulse pointer-events-none absolute top-0 left-0 w-[46rem] h-[46rem] rounded-full blur-[110px]"
-        style={{
-          background:
-            "radial-gradient(circle, var(--signal) 0%, transparent 70%)",
-        }}
-      />
+      <HeroCircuitField className="absolute inset-0 w-full h-full" />
 
       <div style={{ padding: "0 var(--container-pad)" }} className="relative z-10">
         <p className="eyebrow">
@@ -115,7 +70,6 @@ export default function Hero({ dict }: HeroProps) {
 
       <div className="relative z-10 flex-1 flex flex-col justify-center">
         <div ref={wordmarkRef} className="relative" style={{ padding: "0 var(--container-pad)" }}>
-          <OrbitSignal className="absolute right-[6%] xl:right-[10%] top-1/2 -translate-y-1/2 w-[9vw] h-auto max-w-[150px]" />
           <h1 className="font-display font-black leading-[0.86] tracking-tight text-paper select-none">
             <SplitReveal
               text={dict.brand.name}
