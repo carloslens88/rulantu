@@ -99,7 +99,7 @@ export default function Hero({ dict }: HeroProps) {
       <div
         ref={glowRef}
         aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-0 w-[46rem] h-[46rem] rounded-full opacity-30 blur-[110px]"
+        className="signal-pulse pointer-events-none absolute top-0 left-0 w-[46rem] h-[46rem] rounded-full blur-[110px]"
         style={{
           background:
             "radial-gradient(circle, var(--signal) 0%, transparent 70%)",

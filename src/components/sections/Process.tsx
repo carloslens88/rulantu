@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { getGsap, prefersReducedMotion } from "@/lib/gsap";
 import Reveal from "@/components/ui/Reveal";
+import CircuitNode from "@/components/ui/CircuitNode";
 import type { Dictionary } from "@/data/content";
 
 type ProcessProps = {
@@ -76,24 +77,30 @@ export default function Process({ dict }: ProcessProps) {
         </div>
 
         <div ref={wrapRef} className="md:col-span-7 relative pl-10 md:pl-14">
+          {/* The trace: a straight climb, lit from below as you scroll — a
+              small signal-dot rides the leading edge, and the final step
+              (the summit) gets the same glow treatment as the logo's peak. */}
           <div className="absolute left-0 top-2 bottom-2 w-px bg-ink/12">
             <div
               ref={lineFillRef}
               className="absolute left-0 top-0 w-px bg-signal"
               style={{ height: "0%" }}
-            />
+            >
+              <div
+                aria-hidden="true"
+                className="absolute -left-[3px] bottom-0 w-[7px] h-[7px] rounded-full bg-signal shadow-[0_0_10px_2px_var(--signal)]"
+              />
+            </div>
           </div>
 
-          {process.map((step) => (
+          {process.map((step, i) => (
             <div
               key={step.index}
               data-step
+              data-summit={i === process.length - 1 ? "true" : undefined}
               className="process-step relative pb-16 last:pb-0 transition-opacity duration-500"
             >
-              <span
-                aria-hidden="true"
-                className="process-dot absolute -left-10 md:-left-14 top-1 w-2.5 h-2.5 rounded-full bg-ink/20 transition-colors duration-500"
-              />
+              <CircuitNode className="process-node absolute -left-10 md:-left-14 top-0 w-5 h-5 md:w-6 md:h-6 text-ink/25 transition-colors duration-500" />
               <span className="eyebrow process-index transition-colors duration-500">
                 {step.index}
               </span>
@@ -111,8 +118,11 @@ export default function Process({ dict }: ProcessProps) {
       <style>{`
         .process-step { opacity: 0.4; }
         .process-step.is-active { opacity: 1; }
-        .process-step.is-active .process-dot { background: var(--signal); }
+        .process-step.is-active .process-node { color: var(--signal); }
         .process-step.is-active .process-index { color: var(--signal-dim); }
+        .process-step[data-summit].is-active .process-node {
+          filter: drop-shadow(0 0 6px var(--signal));
+        }
       `}</style>
     </section>
   );

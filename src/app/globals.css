@@ -10,8 +10,8 @@
   --ink-soft: #17171a;
   --paper: #f4f1ea;
   --paper-dim: #e8e3d8;
-  --signal: #ff3c1f;
-  --signal-dim: #c92c14;
+  --signal: #ff5a1f;
+  --signal-dim: #ba3708;
   --stone: #8c8578;
   --stone-soft: #4a4844;
 
@@ -147,6 +147,17 @@
     .cursor-ring {
       display: none;
     }
+  }
+
+  /* Ambient glow pulse — echoes the logo's glowing peak. Only opacity
+     animates here; the Hero's cursor-follow script owns `transform`. */
+  @keyframes signal-pulse {
+    0%, 100% { opacity: 0.22; }
+    50% { opacity: 0.4; }
+  }
+
+  .signal-pulse {
+    animation: signal-pulse 4.5s ease-in-out infinite;
   }
 
   /* Marquee */

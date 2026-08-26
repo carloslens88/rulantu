@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { getGsap, prefersReducedMotion } from "@/lib/gsap";
 import Reveal from "@/components/ui/Reveal";
+import CircuitNode from "@/components/ui/CircuitNode";
 import type { Dictionary } from "@/data/content";
 
 type ServicesProps = {
@@ -62,7 +63,8 @@ export default function Services({ dict }: ServicesProps) {
               className="service-row group border-b border-paper/12 py-8 md:py-10 transition-colors duration-500"
             >
               <div className="flex items-baseline gap-4 md:gap-8">
-                <span className="service-index eyebrow shrink-0 transition-colors duration-500">
+                <span className="service-index eyebrow shrink-0 inline-flex items-center gap-2 transition-colors duration-500">
+                  <CircuitNode className="w-3.5 h-3.5 md:w-4 md:h-4 transition-colors duration-500" />
                   {service.index}
                 </span>
                 <h3 className="service-title font-display font-bold tracking-tight text-[8vw] md:text-[3.2vw] leading-none transition-colors duration-500">

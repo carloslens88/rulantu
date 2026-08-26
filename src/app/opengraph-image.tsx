@@ -53,7 +53,7 @@ export default function OpengraphImage() {
               display: "flex",
               fontSize: 46,
               fontWeight: 600,
-              color: "#FF3C1F",
+              color: "#FF5A1F",
               letterSpacing: -1,
             }}
           >
