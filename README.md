@@ -86,29 +86,32 @@ dictionaries share the `Dictionary` type.
 
 ## The logo
 
-`src/components/ui/Logo.tsx` renders the real mark, extracted from the
-supplied artwork (a flattened JPEG mockup with no transparency). Two
-derived assets live in `public/`, each as WebP with a PNG fallback via
-`<picture>`:
+`src/components/ui/Logo.tsx` renders the real mark, cropped directly from
+the supplied artwork (a flattened JPEG mockup, no transparency). Three
+derived assets live in `public/`:
 
-- `logo-icon.(png|webp)` — just the mountain/circuit mark, background
-  removed. Used small, paired with real "RULANTU" text (`variant="compact"`,
-  the default) — nav, mobile menu.
-- `logo-lockup.(png|webp)` — the full icon + wordmark together, as
-  designed. Used large, where the wordmark's own metallic rendering reads
-  clearly (`variant="full"`) — footer.
+- `logo-icon.(jpg|webp)` — just the mountain/circuit mark, tightly cropped,
+  **background intentionally left in** (see below). Used small, paired with
+  real "RULANTU" text (`variant="compact"`, the default) — nav, mobile menu.
+- `logo-lockup.(jpg|webp)` — the full icon + wordmark together, as
+  designed, same treatment. Used large (`variant="full"`) — footer, inside
+  a rounded `bg-ink` card (see next point).
 - `favicon.svg` — a separate, simplified asset: the icon's silhouette
   (traced with `potrace`, fine circuit-line detail dropped) in flat signal
   orange on the ink background. The full metallic icon has too much fine
   detail to read at 16–32px; a bold flat silhouette does.
 
-There's a small soft artifact from AI background removal near the base of
-the orange chevron (visible on close inspection, not on a normal page
-view) — a cleaner source file (vector or a transparent-background export)
-would let this be redone with a clean cut instead. To swap in a better
-source later: redo the crop/background-removal pipeline (`rembg` with
-`alpha_matting=True` got the cleanest result here) and replace the four
-files in `public/`, keeping the same filenames.
+**Why the background is still there:** an earlier version tried removing
+it (`rembg`, AI segmentation) to get a transparent cutout — every attempt
+left a visible artifact near the orange chevron, worse the larger the mark
+was shown. The source's background is a near-black texture (~`rgb(8,8,8)`,
+close enough to `--ink` `#0D0D0E` to read as seamless), so cropping tightly
+and using the image as-is — dark background included — turned out both
+simpler and cleaner. That's why `logo-icon` sits directly on the nav's dark
+background with no wrapper, and why the footer wraps `logo-lockup` in an
+explicit `bg-ink` card rather than relying on transparency: given a proper
+vector or transparent-background source in the future, that card can go
+away and the mark can sit directly on any background again.
 
 ## Before going live
 
