@@ -100,7 +100,7 @@ export type Dictionary = {
   footer: {
     tagline: string;
     rights: string;
-    getInTouch: string;
+    explore: string;
   };
   contact: {
     eyebrow: string;
@@ -328,7 +328,7 @@ const en: Dictionary = {
   footer: {
     tagline: "We make brands impossible to ignore.",
     rights: "All rights reserved.",
-    getInTouch: "Get in touch",
+    explore: "Explore",
   },
   contact: {
     eyebrow: "Other ways to reach us",
@@ -542,7 +542,7 @@ const es: Dictionary = {
   footer: {
     tagline: "Hacemos marcas imposibles de ignorar.",
     rights: "Todos los derechos reservados.",
-    getInTouch: "Hablemos",
+    explore: "Explorar",
   },
   contact: {
     eyebrow: "Otras formas de escribirnos",

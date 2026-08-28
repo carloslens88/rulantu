@@ -1,6 +1,6 @@
 import Logo from "@/components/ui/Logo";
 import Marquee from "@/components/ui/Marquee";
-import ContactChannels from "@/components/ui/ContactChannels";
+import MagneticButton from "@/components/ui/MagneticButton";
 import type { Dictionary, Locale } from "@/data/content";
 
 type FooterProps = {
@@ -17,13 +17,30 @@ export default function Footer({ dict }: FooterProps) {
 
       <div style={{ padding: "clamp(4rem, 10vw, 7rem) var(--container-pad) 3rem" }}>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-end">
-          <div className="md:col-span-7 max-w-2xl rounded-2xl overflow-hidden bg-ink p-8 md:p-10">
+          <div className="metal-shine md:col-span-7 max-w-2xl rounded-2xl overflow-hidden bg-ink p-8 md:p-10">
             <Logo variant="full" />
           </div>
 
           <div className="md:col-span-5">
-            <p className="eyebrow text-stone-soft mb-1">{dict.footer.getInTouch}</p>
-            <ContactChannels dict={dict} />
+            <p className="eyebrow text-stone-soft mb-4">{dict.footer.explore}</p>
+            <nav className="flex flex-col gap-2 mb-8">
+              {dict.nav.items.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="font-display text-xl md:text-2xl font-medium hover:text-signal transition-colors duration-300 w-fit"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+            <MagneticButton
+              href={dict.brand.instagram}
+              external
+              className="eyebrow text-stone-soft hover:text-signal transition-colors duration-300"
+            >
+              Instagram — {dict.brand.instagramHandle}
+            </MagneticButton>
           </div>
         </div>
 

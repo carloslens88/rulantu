@@ -149,6 +149,40 @@
     }
   }
 
+  /* Metallic sheen — a soft diagonal light band sweeps periodically across
+     dark cards, echoing brushed metal catching light (the logo's own
+     material). Ambient, not hover-triggered, so it reads without anyone
+     needing to find it first. Apply to any `position: relative` card with
+     `overflow: hidden`. */
+  @keyframes metal-sweep {
+    0%, 82% { transform: translateX(-120%) rotate(8deg); }
+    100% { transform: translateX(220%) rotate(8deg); }
+  }
+
+  .metal-shine {
+    position: relative;
+  }
+
+  .metal-shine::after {
+    content: "";
+    position: absolute;
+    top: -60%;
+    left: 0;
+    width: 35%;
+    height: 220%;
+    background: linear-gradient(
+      115deg,
+      transparent 0%,
+      color-mix(in srgb, var(--paper) 10%, transparent) 45%,
+      color-mix(in srgb, var(--paper) 22%, transparent) 50%,
+      color-mix(in srgb, var(--paper) 10%, transparent) 55%,
+      transparent 100%
+    );
+    transform: translateX(-120%) rotate(8deg);
+    animation: metal-sweep 7s ease-in-out infinite;
+    pointer-events: none;
+  }
+
   /* Marquee */
   @keyframes marquee {
     to {

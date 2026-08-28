@@ -145,7 +145,7 @@ export default function Differentiation({ dict }: DifferentiationProps) {
         <div className="md:col-span-5">
           <p className="eyebrow mb-6 text-signal-dim">{differentiation.after.label}</p>
           <Reveal>
-            <div ref={cardRef} className="bg-ink text-paper rounded-2xl p-8 md:p-10">
+            <div ref={cardRef} className="metal-shine bg-ink text-paper rounded-2xl p-8 md:p-10 overflow-hidden">
               <p className="font-display font-bold text-2xl md:text-3xl leading-snug">
                 {differentiation.after.items[0]}
               </p>
