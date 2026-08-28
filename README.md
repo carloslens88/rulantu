@@ -113,6 +113,13 @@ explicit `bg-ink` card rather than relying on transparency: given a proper
 vector or transparent-background source in the future, that card can go
 away and the mark can sit directly on any background again.
 
+Re-cropped in place (2026-08-28) from a higher-resolution source (1672×941
+vs. the original 1375×768) — same treatment, same filenames, just sharper,
+and the favicon was re-traced from it too. To swap in a better source
+later: repeat the crop (find the icon/wordmark row gap and column bounds
+by thresholding distance-from-background, same as before) and overwrite
+the same files in `public/`.
+
 ## Before going live
 
 - Swap in the real logo (see above).
