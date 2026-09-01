@@ -44,6 +44,34 @@ export function MailIcon({ className }: IconProps) {
   );
 }
 
+export function ChatIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M4 5h16v11H8l-4 4V5Z" strokeLinejoin="round" />
+      <path d="M8 9.5h8M8 13h5" />
+    </svg>
+  );
+}
+
+export function CloseIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  );
+}
+
+/** The diagonal-arrow glyph already used in the Hero/CTA/Packages buttons —
+ * reused here so the chat's send action matches the site's one arrow icon
+ * rather than introducing a second, different one (e.g. a paper plane). */
+export function ArrowIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M6 18L18 6M18 6H8M18 6V16" />
+    </svg>
+  );
+}
+
 export function CalendarIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className}>

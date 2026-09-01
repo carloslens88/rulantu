@@ -112,6 +112,15 @@ export type Dictionary = {
     bookingLabel: string;
     bookingValue: string;
   };
+  chat: {
+    title: string;
+    greeting: string;
+    placeholder: string;
+    send: string;
+    openLabel: string;
+    closeLabel: string;
+    errorMessage: string;
+  };
 };
 
 const brandShared = {
@@ -343,6 +352,15 @@ const en: Dictionary = {
     bookingLabel: "Book a call",
     bookingValue: "15-min intro call",
   },
+  chat: {
+    title: "Ask RULANTU",
+    greeting: "Hi — ask me anything about RULANTU: services, process, packages.",
+    placeholder: "Type a message…",
+    send: "Send",
+    openLabel: "Open chat",
+    closeLabel: "Close chat",
+    errorMessage: "Something went wrong — try WhatsApp or book a call instead.",
+  },
 };
 
 const es: Dictionary = {
@@ -558,6 +576,15 @@ const es: Dictionary = {
     emailLabel: "Correo",
     bookingLabel: "Agenda una llamada",
     bookingValue: "Videollamada de 15 min",
+  },
+  chat: {
+    title: "Pregúntale a RULANTU",
+    greeting: "Hola — pregúntame lo que quieras sobre RULANTU: servicios, proceso, paquetes.",
+    placeholder: "Escribe un mensaje…",
+    send: "Enviar",
+    openLabel: "Abrir chat",
+    closeLabel: "Cerrar chat",
+    errorMessage: "Algo salió mal — prueba por WhatsApp o agenda una llamada.",
   },
 };
 

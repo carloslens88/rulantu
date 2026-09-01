@@ -3,6 +3,7 @@ import { Bricolage_Grotesque, Manrope, IBM_Plex_Mono } from "next/font/google";
 import "../globals.css";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 import CustomCursor from "@/components/layout/CustomCursor";
+import ChatWidget from "@/components/layout/ChatWidget";
 import {
   getDictionary,
   resolveLocale,
@@ -128,6 +129,7 @@ export default async function RootLayout({ children, params }: Props) {
         <CustomCursor />
         <SmoothScroll />
         {children}
+        <ChatWidget dict={dict} />
       </body>
     </html>
   );
