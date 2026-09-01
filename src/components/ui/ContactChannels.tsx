@@ -1,5 +1,5 @@
 import MagneticButton from "@/components/ui/MagneticButton";
-import { WhatsAppIcon, InstagramIcon, MailIcon } from "@/components/ui/icons";
+import { WhatsAppIcon, InstagramIcon, MailIcon, CalendarIcon } from "@/components/ui/icons";
 import type { Dictionary } from "@/data/content";
 
 type ContactChannelsProps = {
@@ -8,14 +8,22 @@ type ContactChannelsProps = {
 };
 
 /**
- * The three direct contact channels (WhatsApp, Instagram, email), styled as
- * a clear icon+label list rather than muted eyebrow text — used in both the
- * contact section and the footer so neither buries them.
+ * The direct contact channels (book a call, WhatsApp, Instagram, email),
+ * styled as a clear icon+label list rather than muted eyebrow text — used
+ * in both the contact section and the footer so neither buries them.
  */
 export default function ContactChannels({ dict, className = "" }: ContactChannelsProps) {
   const { brand, contact } = dict;
 
   const channels = [
+    {
+      key: "booking",
+      Icon: CalendarIcon,
+      label: contact.bookingLabel,
+      value: contact.bookingValue,
+      href: brand.bookingUrl,
+      external: true,
+    },
     {
       key: "whatsapp",
       Icon: WhatsAppIcon,

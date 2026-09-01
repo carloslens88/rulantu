@@ -35,6 +35,8 @@ export type Dictionary = {
     whatsapp: string;
     /** Human-readable version of the same number, for display. */
     whatsappDisplay: string;
+    /** Cal.com (or similar) booking link — free tier, no backend needed. */
+    bookingUrl: string;
   };
   metaDescription: string;
   nav: {
@@ -107,6 +109,8 @@ export type Dictionary = {
     whatsappLabel: string;
     instagramLabel: string;
     emailLabel: string;
+    bookingLabel: string;
+    bookingValue: string;
   };
 };
 
@@ -122,6 +126,7 @@ const brandShared = {
   whatsapp: "000000000",
   // TODO before launch: keep this in sync with the number above, formatted for display.
   whatsappDisplay: "+00 000 00 00 00",
+  bookingUrl: "https://cal.com/rulantu-kibqiw/15min",
 };
 
 const en: Dictionary = {
@@ -335,6 +340,8 @@ const en: Dictionary = {
     whatsappLabel: "WhatsApp",
     instagramLabel: "Instagram",
     emailLabel: "Email",
+    bookingLabel: "Book a call",
+    bookingValue: "15-min intro call",
   },
 };
 
@@ -549,6 +556,8 @@ const es: Dictionary = {
     whatsappLabel: "WhatsApp",
     instagramLabel: "Instagram",
     emailLabel: "Correo",
+    bookingLabel: "Agenda una llamada",
+    bookingValue: "Videollamada de 15 min",
   },
 };
 
