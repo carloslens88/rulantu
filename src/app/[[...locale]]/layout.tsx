@@ -100,6 +100,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       follow: true,
       googleBot: { index: true, follow: true },
     },
+    verification: {
+      google: "J6tQ2THdacJZ9ZITsH9jmBPsOXNMNXIkKzJsghAXshk",
+    },
     icons: {
       icon: "/favicon.svg",
     },
