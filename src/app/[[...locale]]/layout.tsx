@@ -9,6 +9,7 @@ import {
   resolveLocale,
   localePath,
   locales,
+  defaultLocale,
   generateLocaleParams,
 } from "@/data/content";
 
@@ -68,7 +69,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     creator: dict.brand.name,
     alternates: {
       canonical: path,
-      languages: Object.fromEntries(locales.map((l) => [l, localePath(l)])),
+      languages: {
+        ...Object.fromEntries(locales.map((l) => [l, localePath(l)])),
+        // Fallback for languages we don't have a dedicated version for —
+        // points search engines at the default-locale page instead of
+        // guessing.
+        "x-default": localePath(defaultLocale),
+      },
     },
     openGraph: {
       // Set explicitly (not relying on opengraph-image.tsx auto-injection) —

@@ -6,9 +6,10 @@ export const dynamic = "force-static";
 const siteUrl = "https://rulantu.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const languages = Object.fromEntries(
-    locales.map((locale) => [locale, `${siteUrl}${localePath(locale)}`])
-  );
+  const languages = {
+    ...Object.fromEntries(locales.map((locale) => [locale, `${siteUrl}${localePath(locale)}`])),
+    "x-default": `${siteUrl}${localePath(defaultLocale)}`,
+  };
 
   return locales.map((locale) => ({
     url: `${siteUrl}${localePath(locale)}`,
